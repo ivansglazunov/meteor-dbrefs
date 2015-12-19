@@ -15,3 +15,16 @@ Meteor.Collection.prototype.findOne = function(dbref) {
   }
   return nativeFindOne.apply(this, arguments);
 };
+
+// Meteor.Collection.findOne(DBRef)
+// https://github.com/ivansglazunov/meteor-dbrefs/issues/3
+Mongo.Collection.findOne = Meteor.Collection.findOne = function(dbref) {
+  if (dbref.hasOwnProperty('_bsontype') && dbref._bsontype == 'DBRef') {
+    var collection = this.get(dbref.namespace)
+    return collection.findOne.apply(collection, arguments);
+  } else if (dbref.hasOwnProperty('$ref')) {
+    var collection = this.get(dbref.$ref)
+    return collection.findOne.apply(collection, arguments);
+  }
+  return undefined;
+};

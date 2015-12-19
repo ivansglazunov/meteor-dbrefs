@@ -8,6 +8,8 @@ Package.describe({
 
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
+  api.use('mongo');
+  api.use('dburles:mongo-collection-instances');
   api.use('ecmascript');
   api.addFiles('dbrefs.js');
 });
@@ -17,5 +19,6 @@ Package.onTest(function(api) {
   api.use('tinytest');
   api.use('ivansglazunov:dbrefs');
   api.use('random');
+  api.use('mongo');
   api.addFiles('tests.js');
 });
