@@ -16,5 +16,6 @@ Package.onTest(function(api) {
   api.use('ecmascript');
   api.use('tinytest');
   api.use('ivansglazunov:dbrefs');
+  api.use('random');
   api.addFiles('tests.js');
 });
