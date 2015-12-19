@@ -9,7 +9,7 @@ Package.describe({
 Package.onUse(function(api) {
   api.versionsFrom('1.2.1');
   api.use('mongo');
-  api.use('dburles:mongo-collection-instances');
+  api.use('dburles:mongo-collection-instances@0.3.4');
   api.use('ecmascript');
   api.addFiles('dbrefs.js');
 });
