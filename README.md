@@ -13,6 +13,17 @@ test.findOne(test.findOne('b').link)._id == 'a' // true
 test.findOne({ $ref: 'test', $id: 'a' })._id == 'a' // true
 ```
 
+### Added `Collection.findOne`
+
+Automatically search the collection within a database application, and receiving document here.
+
+```js
+Col.insert({ _id: 'a' });
+Col.insert({ _id: 'b', link: { $ref: test.test_case.name, $id: 'a' } });
+Meteor.Collection.findOne(Col.findOne('b').link)._id == 'a' // true
+Meteor.Collection.findOne({ $ref: test.test_case.name, $id: 'a' })._id == 'a' // true
+```
+
 ### Support for syntax:
 
 * `{ $ref, $id, $db }`
