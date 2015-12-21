@@ -20,11 +20,23 @@ Meteor.Collection.prototype.findOne = function(dbref) {
 // https://github.com/ivansglazunov/meteor-dbrefs/issues/3
 Mongo.Collection.findOne = Meteor.Collection.findOne = function(dbref) {
   if (dbref.hasOwnProperty('_bsontype') && dbref._bsontype == 'DBRef') {
-    var collection = this.get(dbref.namespace)
+    var collection = this.get(dbref.namespace);
     return collection.findOne.apply(collection, arguments);
   } else if (dbref.hasOwnProperty('$ref')) {
-    var collection = this.get(dbref.$ref)
+    var collection = this.get(dbref.$ref);
     return collection.findOne.apply(collection, arguments);
   }
   return undefined;
 };
+
+// Get collection by DBRef
+// https://github.com/ivansglazunov/meteor-dbrefs/issues/4
+var nativeGet = Mongo.Collection.get;
+Mongo.Collection.get = function(dbref) {
+  if (dbref.hasOwnProperty('_bsontype') && dbref._bsontype == 'DBRef') {
+    return nativeGet(dbref.namespace);
+  } else if (dbref.hasOwnProperty('$ref')) {
+    return nativeGet(dbref.$ref);
+  }
+  return nativeGet.apply(this, arguments);
+}
