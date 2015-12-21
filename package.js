@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ivansglazunov:dbrefs',
-  version: '0.0.2',
+  version: '0.0.3',
   summary: 'Lovely tools to work with DBRefs in Meteor.',
   git: 'https://github.com/ivansglazunov/meteor-dbrefs',
   documentation: 'README.md'
