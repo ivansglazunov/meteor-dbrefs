@@ -1,6 +1,6 @@
 Package.describe({
   name: 'ivansglazunov:dbrefs',
-  version: '0.0.4',
+  version: '0.1.0',
   summary: 'Lovely tools to work with DBRefs in Meteor.',
   git: 'https://github.com/ivansglazunov/meteor-dbrefs',
   documentation: 'README.md'
@@ -14,7 +14,7 @@ Package.onUse(function(api) {
   api.use('dburles:mongo-collection-instances@0.3.4');
   api.use('ecmascript');
   api.addFiles('dbrefs.js');
-  api.export('DBRefSchema');
+  api.export('DBRef');
 });
 
 Package.onTest(function(api) {

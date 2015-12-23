@@ -1,32 +1,33 @@
-// Expand findOne
-// https://github.com/ivansglazunov/meteor-dbrefs/issues/2
-var nativeFindOne = Meteor.Collection.prototype.findOne;
-Meteor.Collection.prototype.findOne = function(dbref) {
-  if (typeof(dbref) == 'object') {
-    if (dbref.hasOwnProperty('_bsontype') && dbref._bsontype == 'DBRef') {
-      var findArguments = [dbref.oid];
-      findArguments.push.apply(findArguments, Array.prototype.slice.call(arguments, 1));
-      return nativeFindOne.apply(this, findArguments);
-    } else if (dbref.hasOwnProperty('$id')) {
-      var findArguments = [dbref.$id];
-      findArguments.push.apply(findArguments, Array.prototype.slice.call(arguments, 1));
-      return nativeFindOne.apply(this, findArguments);
-    }
-  }
-  return nativeFindOne.apply(this, arguments);
-};
-
-// Meteor.Collection.findOne(DBRef)
-// https://github.com/ivansglazunov/meteor-dbrefs/issues/3
-Mongo.Collection.findOne = Meteor.Collection.findOne = function(dbref) {
+// Find by DBRef
+// https://github.com/ivansglazunov/meteor-dbrefs/issues/6
+DBRef = function(dbref) {
+  var dbref = arguments[0];
   if (dbref.hasOwnProperty('_bsontype') && dbref._bsontype == 'DBRef') {
-    var collection = this.get(dbref.namespace);
-    return collection.findOne.apply(collection, arguments);
+    var collection = Meteor.Collection.get(dbref.namespace);
+    return collection.findOne(dbref.oid);
   } else if (dbref.hasOwnProperty('$ref')) {
-    var collection = this.get(dbref.$ref);
-    return collection.findOne.apply(collection, arguments);
+    var collection = Meteor.Collection.get(dbref.$ref);
+    return collection.findOne(dbref.$id);
   }
   return undefined;
+};
+
+// Create new DBRef
+DBRef.new = function(ref, id, db) {
+  var result = {};
+  if (ref) result.$ref = ref;
+  if (id) result.$id = id;
+  if (db) result.$db = db;
+  return result;
+};
+
+// Create query for DBRef in bson
+DBRef.bson = function(ref, id, db) {
+  var result = {};
+  if (ref) result.namespace = ref;
+  if (id) result.oid = id;
+  if (db) result.db = db;
+  return result;
 };
 
 // Get collection by DBRef
@@ -43,7 +44,7 @@ Mongo.Collection.get = function(dbref) {
 
 // Support SimpleSchema
 // https://github.com/ivansglazunov/meteor-dbrefs/issues/5
-DBRefSchema = new SimpleSchema({
+DBRef.Schema = new SimpleSchema({
   $ref: {
     type: String,
     optional: true
