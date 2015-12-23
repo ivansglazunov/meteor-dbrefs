@@ -40,3 +40,32 @@ Mongo.Collection.get = function(dbref) {
   }
   return nativeGet.apply(this, arguments);
 }
+
+// Support SimpleSchema
+// https://github.com/ivansglazunov/meteor-dbrefs/issues/5
+DBRefSchema = new SimpleSchema({
+  $ref: {
+    type: String,
+    optional: true
+  },
+  $id: {
+    type: String,
+    optional: true
+  },
+  $db: {
+    type: String,
+    optional: true
+  },
+  namespace: {
+    type: String,
+    optional: true
+  },
+  oid: {
+    type: String,
+    optional: true
+  },
+  db: {
+    type: String,
+    optional: true
+  }
+});

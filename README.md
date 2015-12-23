@@ -36,6 +36,25 @@ Meteor.Collection.get({ $ref: 'test', $id: 'a' }) == test // true
 Meteor.Collection.get(test.findOne('b').link)._name == 'test' // true
 ```
 
+### `SimpleSchema support` support
+
+Use `DBRefSchema` in your schemes!
+
+```js
+test.attachSchema({
+  link: {
+    type: DBRefSchema,
+    optional: true
+  }
+});
+
+test.insert({ _id: 'a' });
+test.insert({ _id: 'b', link: { $ref: 'test', $id: 'a' } });
+Meteor.Collection.get(test.findOne('b').link) == test // true
+Meteor.Collection.get({ $ref: 'test', $id: 'a' }) == test // true
+Meteor.Collection.get(test.findOne('b').link)._name == 'test' // true
+```
+
 ### Support for syntax:
 
 * `{ $ref, $id, $db }`
