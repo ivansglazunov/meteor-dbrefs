@@ -70,3 +70,11 @@ DBRef.Schema = new SimpleSchema({
     optional: true
   }
 });
+
+// DBRef helper
+Meteor.Collection.prototype.attachDBRef = function() {
+  var collection = this;
+  this.helpers({
+    DBRef: function() { return DBRef.new(collection._name, this._id); }
+  });
+};
