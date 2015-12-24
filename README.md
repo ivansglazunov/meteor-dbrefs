@@ -53,6 +53,13 @@ DBRef.new('test','id','db'); // { $ref: 'test', $id: 'id', $db: 'db' }
 DBRef.bson('test','id','db'); // { namespace: 'test', oid: 'id', db: 'db' }
 ```
 
+### Convert DBRefs
+
+```js
+DBRef.new(DBRef.bson('test','id','db')); // { $ref: 'test', $id: 'id', $db: 'db' }
+DBRef.bson(DBRef.new('test','id','db')); // { namespace: 'test', oid: 'id', db: 'db' }
+```
+
 ### Get DBRef from document
 
 ```js

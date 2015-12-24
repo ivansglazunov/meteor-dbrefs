@@ -86,8 +86,33 @@ Tinytest.add('ivansglazunov:dbrefs DBRef.Schema', function (assert) {
   assert.equal(Test, Mongo.Collection.get({ $ref: test, $id: id1 }));
 });
 
-
 Tinytest.add('ivansglazunov:dbrefs .attachDBRef', function (assert) {
+  var test = Random.id();
+  var Test = new Mongo.Collection(test);
+
+  Test.attachDBRef();
+
+  if (Meteor.isServer) {
+    Test.allow({
+      insert: function () {
+        return true;
+      },
+      update: function () {
+        return true;
+      },
+      remove: function () {
+        return true;
+      }
+    });
+}
+
+  var id1 = Random.id();
+  Test.insert({ _id: id1 });
+
+  assert.equal(DBRef.new(test, id1), Test.findOne(id1).DBRef());
+});
+
+Tinytest.add('ivansglazunov:dbrefs .isBSON .isQuery', function (assert) {
   var test = Random.id();
   var Test = new Mongo.Collection(test);
 
@@ -107,8 +132,32 @@ Tinytest.add('ivansglazunov:dbrefs .attachDBRef', function (assert) {
     });
   }
 
-  var id1 = Random.id();
-  Test.insert({ _id: id1 });
+  assert.equal(true, DBRef.isQuery(DBRef.new('test', 'id')));
+  assert.equal(true, DBRef.isBSON(DBRef.bson('test', 'id')));
+  assert.equal(false, DBRef.isQuery({}));
+  assert.equal(false, DBRef.isBSON({}));
+});
 
-  assert.equal(DBRef.new(test, id1), Test.findOne(id1).DBRef());
+Tinytest.add('ivansglazunov:dbrefs convertation', function (assert) {
+  var test = Random.id();
+  var Test = new Mongo.Collection(test);
+
+  Test.attachDBRef();
+
+  if (Meteor.isServer) {
+    Test.allow({
+      insert: function () {
+        return true;
+      },
+      update: function () {
+        return true;
+      },
+      remove: function () {
+        return true;
+      }
+    });
+  }
+
+  assert.equal(true, DBRef.isQuery(DBRef.new(DBRef.bson('test', 'id'))));
+  assert.equal(true, DBRef.isBSON(DBRef.bson(DBRef.new('test', 'id'))));
 });

@@ -12,21 +12,41 @@ DBRef = function(dbref) {
   return undefined;
 };
 
+DBRef.isQuery = function(dbref) {
+  return (typeof(dbref) == 'object' && !!dbref.$id && !!dbref.$ref);
+};
+
+DBRef.isBSON = function(dbref) {
+  return (typeof(dbref) == 'object' && !!dbref.oid && !!dbref.namespace);
+};
+
 // Create new DBRef
 DBRef.new = function(ref, id, db) {
-  var result = {};
-  if (ref) result.$ref = ref;
-  if (id) result.$id = id;
-  if (db) result.$db = db;
+  if (typeof(ref) == 'object') {
+    if (DBRef.isQuery(ref)) return ref;
+    else if (DBRef.isBSON(ref)) return DBRef.new(ref.namespace, ref.oid, ref.db);
+    else throw new Meteor.Error('Invalid dbref object.');
+  } else {
+    var result = {};
+    if (ref) result.$ref = ref;
+    if (id) result.$id = id;
+    if (db) result.$db = db;
+  }
   return result;
 };
 
 // Create query for DBRef in bson
 DBRef.bson = function(ref, id, db) {
-  var result = {};
-  if (ref) result.namespace = ref;
-  if (id) result.oid = id;
-  if (db) result.db = db;
+  if (typeof(ref) == 'object') {
+    if (DBRef.isBSON(ref)) return ref;
+    else if (DBRef.isQuery(ref)) return DBRef.bson(ref.$ref, ref.$id, ref.$db);
+    else throw new Meteor.Error('Invalid dbref object.');
+  } else {
+    var result = {};
+    if (ref) result.namespace = ref;
+    if (id) result.oid = id;
+    if (db) result.db = db;
+  }
   return result;
 };
 
@@ -75,6 +95,6 @@ DBRef.Schema = new SimpleSchema({
 Meteor.Collection.prototype.attachDBRef = function() {
   var collection = this;
   this.helpers({
-    DBRef: function() { return DBRef.new(collection._name, this._id); }
+    DBRef: function() { return DBRef.new(collection._name, this._id); },
   });
 };
