@@ -4,6 +4,8 @@
 meteor add ivansglazunov:dbrefs
 ```
 
+I recommend using with the package `ivansglazunov:trees`.
+
 ### Find by DBRef
 
 Automatically search the collection within a database application, and receiving document here.
@@ -27,7 +29,7 @@ Meteor.Collection.get({ $ref: 'test', $id: 'a' }) == test // true
 Meteor.Collection.get(Test.findOne('b').link)._name == 'test' // true
 ```
 
-### `SimpleSchema support` support
+### `SimpleSchema` support
 
 Use `DBRef.Schema` in your schemes!
 
