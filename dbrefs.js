@@ -12,6 +12,10 @@ DBRef = function(dbref) {
   return undefined;
 };
 
+DBRef.isDBRef = function(dbref) {
+  return DBRef.isQuery(dbref) || DBRef.isBSON(dbref);
+};
+
 DBRef.isQuery = function(dbref) {
   return (typeof(dbref) == 'object' && !!dbref.$id && !!dbref.$ref);
 };
